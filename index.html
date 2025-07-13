@@ -65,11 +65,24 @@
       margin-left: auto;
       margin-right: auto;
     }
+    .frase-final {
+  margin-top: 50px;
+  font-size: 0.95em;
+  color: #ffcc70;
+  text-align: center;
+  padding: 20px 10px;
+  border-top: 1px solid #444;
+  max-width: 500px;
+}
   </style>
 </head>
 <body>
   <div id="contenido">
-    <h1>🎉 Juegos Capi Fiel 🎉</h1>
+  <h1>🎉 Juegos Capi Fiel 🎉</h1>
+  <h2 style="margin-top: -10px; font-weight: normal; font-size: 1.2em; color: #ffcc70;">
+    ¡Solo para los más fieles! 🔥<br> Lunes y martes con premios especiales!
+  </h2>
+  
     <div class="seccion">
       <h2>🎰 Tragamonedas</h2>
       <div class="slot-container">
@@ -116,10 +129,15 @@
     <h1>😢 Lo siento</h1>
     <p>Estos juegos solo están disponibles los lunes y martes.</p>
   </div>
+  <footer class="frase-final">
+  Gracias por jugar en Capi Juegos 🎉 ¡Te esperamos lunes y martes! 💛 <br> ¡Reclama personalmente tu premio!
+  <p> <a href="https://maps.app.goo.gl/vDd58rnaHtdLeWVM6" target="_blank">¡Cómo llegar!</a> </p>
+</footer>
   <script>
     let hasWon = false;
     let ultimoIndiceGanador = -1;
     let anguloActual = 0; // Ángulo actual de la ruleta
+    
 
     window.onload = function () {
       let hoy = new Date().getDay();
@@ -325,7 +343,6 @@ if (canvasScratch) {
     raspar(x, y);
   }, { passive: false });
 }
-
 
     };
   </script>
