@@ -182,7 +182,7 @@
       const canvas = document.getElementById("canvasRuleta");
       const ctx = canvas.getContext("2d");
       const radio = canvas.width / 2;
-      const valores = ["10%", "15%", "20%", "25%", "15%", "10%"];
+      const valores = ["10%", "15%", "20%", "25%", "10%", "30%"];
       const colores = ["#ffcc70", "#f4a261", "#e76f51", "#2a9d8f", "#264653", "#e9c46a"];
       const anguloPorSector = (2 * Math.PI) / valores.length;
 
@@ -262,7 +262,7 @@ window.girarRuleta = function () {
       const indice = obtenerIndicePorAngulo(anguloRelativo);
       const premio = valores[indice];
 
-      document.getElementById("resultadoRuleta").textContent = `🎉 Ganaste el ${premio}!`;
+      document.getElementById("resultadoRuleta").textContent = `🎉 Ganaste el ${premio} de descuento en tu segundo producto!`;
     }
   }, 20);
 };
