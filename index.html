@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capi Juegos Mejorados</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #ffcc70;
+      text-align: center;
+    }
+    .seccion {
+      background: #2b2b2b;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 20px 0;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0 10px #000;
+    }
+    .btn {
+      background: #ffcc70;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #bloqueo {
+      display: none;
+      text-align: center;
+      padding-top: 100px;
+    }
+    .slot-img {
+      width: 70px;
+      height: 70px;
+      margin: 5px;
+      border-radius: 10px;
+      object-fit: cover;
+      transform: translateY(0);
+      transition: transform 2s ease;
+      position: relative;
+    }
+    .slot-container {
+      display: flex;
+      justify-content: center;
+    }
+    #canvasRuleta {
+      background: #999;
+      border-radius: 10px;
+      margin-top: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="contenido">
+    <h1>🎉 Juegos Capi Fiel 🎉</h1>
+    <div class="seccion">
+      <h2>🎰 Tragamonedas</h2>
+      <div class="slot-container">
+        <img id="slot1" class="slot-img" src="" alt="slot" />
+        <img id="slot2" class="slot-img" src="" alt="slot" />
+        <img id="slot3" class="slot-img" src="" alt="slot" />
+      </div>
+      <button class="btn" onclick="girarTragamonedas()">Girar</button>
+      <p id="resultadoSlot"></p>
+    </div>
+    <div class="seccion">
+      <h2>🎡 Ruleta Ganadora</h2>
+      <div style="position: relative; width: 300px; height: 320px; margin: auto;">
+        <div
+          style="
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 20px solid red;
+            z-index: 10;
+          "
+        ></div>
+        <canvas id="canvasRuleta" width="300" height="300"></canvas>
+      </div>
+      <button class="btn" onclick="girarRuleta()">Girar Ruleta</button>
+      <p id="resultadoRuleta"></p>
+    </div>
+    <div class="seccion">
+  <h2>🎯 Raspadita</h2>
+  <p>¡Raspa para descubrir tu premio!</p>
+  <div style="position: relative; width: 300px; height: 100px;">
+    <img id="premioImagen" src="topping-premio.jpg" style="width: 300px; height: 100px; border-radius: 10px;" />
+    <canvas id="scratchCanvas" width="300" height="100" style="position: absolute; top: 0; left: 0; border-radius: 10px;"></canvas>
+  </div>
+  <div id="mensajePremio" style="margin-top: 10px"></div>
+</div>
+  </div>
+  <div id="bloqueo">
+    <h1>😢 Lo siento</h1>
+    <p>Estos juegos solo están disponibles los lunes y martes.</p>
+  </div>
+  <script>
+    let hasWon = false;
+    let ultimoIndiceGanador = -1;
+    let anguloActual = 0; // Ángulo actual de la ruleta
+
+    window.onload = function () {
+      let hoy = new Date().getDay();
+      if (hoy === 0) hoy = 1; // ajuste que tenías, quizás para domingo?
+      if (hoy === 1 || hoy === 2) {
+        document.getElementById("contenido").style.display = "block";
+        document.getElementById("bloqueo").style.display = "none";
+      } else {
+        document.getElementById("contenido").style.display = "none";
+        document.getElementById("bloqueo").style.display = "block";
+        return;
+      }
+
+      const imagenes = [
+        { src: "Soda Italiana.jpg", nombre: "Soda Italiana" },
+        { src: "Fresas con Crema y Nutella.jpg", nombre: "Fresas con Crema y Nutella" },
+        { src: "Bubble Tea Nutella.jpg", nombre: "Bubble Tea Nutella" },
+      ];
+
+      const slot1 = document.getElementById("slot1");
+      const slot2 = document.getElementById("slot2");
+      const slot3 = document.getElementById("slot3");
+      const imagenInicial = "crepes.jpg";
+      slot1.src = imagenInicial;
+      slot2.src = imagenInicial;
+      slot3.src = imagenInicial;
+
+      window.girarTragamonedas = function () {
+        const resultadoSlot = document.getElementById("resultadoSlot");
+        let i = 0;
+        const interval = setInterval(() => {
+          slot1.src = imagenes[Math.floor(Math.random() * imagenes.length)].src;
+          slot2.src = imagenes[Math.floor(Math.random() * imagenes.length)].src;
+          slot3.src = imagenes[Math.floor(Math.random() * imagenes.length)].src;
+          i++;
+        }, 100);
+        setTimeout(() => {
+          clearInterval(interval);
+          const final = [
+            imagenes[Math.floor(Math.random() * imagenes.length)],
+            imagenes[Math.floor(Math.random() * imagenes.length)],
+            imagenes[Math.floor(Math.random() * imagenes.length)],
+          ];
+          slot1.src = final[0].src;
+          slot2.src = final[1].src;
+          slot3.src = final[2].src;
+          if (final[0].src === final[1].src && final[1].src === final[2].src) {
+            if (!hasWon) {
+              resultadoSlot.textContent = `🎉 ¡Ganaste tu segundo ${final[0].nombre} a mitad de precio!`;
+              hasWon = true;
+            } else {
+              resultadoSlot.textContent = "Ya ganaste en otro juego.";
+            }
+          } else {
+            resultadoSlot.textContent = "Inténtalo de nuevo...";
+          }
+        }, 2000);
+      };
+
+      const canvas = document.getElementById("canvasRuleta");
+      const ctx = canvas.getContext("2d");
+      const radio = canvas.width / 2;
+      const valores = ["10%", "15%", "20%", "25%", "15%", "10%"];
+      const colores = ["#ffcc70", "#f4a261", "#e76f51", "#2a9d8f", "#264653", "#e9c46a"];
+      const anguloPorSector = (2 * Math.PI) / valores.length;
+
+      function obtenerIndicePorAngulo(angulo) {
+        let index = Math.floor(angulo / anguloPorSector);
+        return index % valores.length;
+      }
+
+      function dibujarRuleta() {
+        let anguloInicio = anguloActual;
+        for (let i = 0; i < valores.length; i++) {
+          ctx.beginPath();
+          ctx.moveTo(radio, radio);
+          ctx.arc(radio, radio, radio, anguloInicio, anguloInicio + anguloPorSector);
+          ctx.fillStyle = colores[i % colores.length];
+          ctx.fill();
+          ctx.save();
+          ctx.translate(radio, radio);
+          ctx.rotate(anguloInicio + anguloPorSector / 2);
+          ctx.textAlign = "right";
+          ctx.fillStyle = "#000";
+          ctx.font = "bold 16px sans-serif";
+          ctx.fillText(valores[i], radio - 10, 5);
+          ctx.restore();
+          anguloInicio += anguloPorSector;
+        }
+      }
+
+      dibujarRuleta();
+
+      let girando = false; // Controla si la ruleta está girando
+
+window.girarRuleta = function () {
+  if (hasWon) {
+    document.getElementById("resultadoRuleta").textContent = "Ya ganaste en otro juego.";
+    return;
+  }
+  if (girando) {
+    // Si ya está girando no hacer nada
+    return;
+  }
+  girando = true;
+  document.getElementById("resultadoRuleta").textContent = "🎡 Girando...";
+
+  // Generar un índice ganador diferente del anterior
+ 
+ let indiceGanador = Math.floor(Math.random() * valores.length);
+  // Ángulo inicio y sector según ángulo por sector
+  let anguloInicioSector = indiceGanador * anguloPorSector;
+  const anguloSectorGanador = anguloPorSector;
+  const anguloCentroSector = anguloInicioSector + anguloSectorGanador / 2;
+
+  const vueltas = Math.floor(Math.random() * 3) + 5; // 5 a 7 vueltas
+  const anguloFlecha = 3 * Math.PI / 2; // Posición de la flecha
+  // Ángulo objetivo para que la ruleta pare con el sector ganador en la flecha
+  const anguloObjetivo = vueltas * 2 * Math.PI + (2 * Math.PI + anguloFlecha - anguloCentroSector);
+
+  let velocidad = 0.2 + Math.random() * 0.4;
+  let angulo = anguloActual;
+  const frenado = 0.985;
+
+  const giro = setInterval(() => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    angulo += velocidad;
+    velocidad *= frenado;
+
+    anguloActual = angulo % (2 * Math.PI);
+    dibujarRuleta();
+
+    if (velocidad < 0.002) {
+      clearInterval(giro);
+      girando = false; // ya no está girando
+      hasWon = true;
+
+      // Calcular índice real según el ángulo final y la flecha
+      const anguloRelativo = (2 * Math.PI - anguloActual + anguloFlecha) % (2 * Math.PI);
+      const indice = obtenerIndicePorAngulo(anguloRelativo);
+      const premio = valores[indice];
+
+      document.getElementById("resultadoRuleta").textContent = `🎉 Ganaste el ${premio}!`;
+    }
+  }, 20);
+};
+    const canvasScratch = document.getElementById("scratchCanvas");
+if (canvasScratch) {
+  const ctx = canvasScratch.getContext("2d");
+  const ancho = canvasScratch.width;
+  const alto = canvasScratch.height;
+  let raspando = false;
+
+  // Pintar el parche gris al cargar
+  ctx.fillStyle = "gray";
+  ctx.fillRect(0, 0, ancho, alto);
+
+  ctx.globalCompositeOperation = "destination-out";
+
+  function raspar(x, y) {
+    if (hasWon) return;
+    ctx.beginPath();
+    ctx.arc(x, y, 15, 0, 2 * Math.PI);
+    ctx.fill();
+    verificarRaspado();
+  }
+
+  function verificarRaspado() {
+    const imgData = ctx.getImageData(0, 0, ancho, alto);
+    let pixelesTrans = 0;
+    for (let i = 3; i < imgData.data.length; i += 4) {
+      if (imgData.data[i] === 0) pixelesTrans++;
+    }
+    const totalPixeles = ancho * alto;
+    const porcentaje = (pixelesTrans / totalPixeles) * 100;
+
+    if (porcentaje > 50 && !hasWon) {
+      hasWon = true;
+      document.getElementById("mensajePremio").textContent = "🎁 Topping extra!";
+    }
+  }
+
+  canvasScratch.addEventListener("mousedown", () => raspando = true);
+  canvasScratch.addEventListener("mouseup", () => raspando = false);
+  canvasScratch.addEventListener("mouseleave", () => raspando = false);
+  canvasScratch.addEventListener("mousemove", (e) => {
+    if (!raspando) return;
+    const rect = canvasScratch.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    raspar(x, y);
+  });
+
+  canvasScratch.addEventListener("touchstart", () => raspando = true);
+  canvasScratch.addEventListener("touchend", () => raspando = false);
+  canvasScratch.addEventListener("touchcancel", () => raspando = false);
+  canvasScratch.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    if (!raspando) return;
+    const rect = canvasScratch.getBoundingClientRect();
+    const x = e.touches[0].clientX - rect.left;
+    const y = e.touches[0].clientY - rect.top;
+    raspar(x, y);
+  }, { passive: false });
+}
+
+
+    };
+  </script>
+</body>
+</html>
